@@ -238,7 +238,7 @@ export async function detectHand(player) {
 
               // Gesture танигдсан бол тоглогчийг хөдөлгөх
               if (!isPaused && gestureDirection !== "тодорхойгүй") {
-                const moveSpeed = 6;
+                const moveSpeed = 4;
 
                 switch (gestureDirection) {
                   case "дээш":
