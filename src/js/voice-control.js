@@ -1,15 +1,18 @@
 // src/js/voice-control.js
-import * as handpose from '@tensorflow-models/handpose';
-import * as tf from '@tensorflow/tfjs';
-import { startGame } from './main.js';
+import * as handpose from "@tensorflow-models/handpose";
+import * as tf from "@tensorflow/tfjs";
+import { startGame } from "./main.js";
 
-let model, video, canvas, detecting = false;
+let model,
+  video,
+  canvas,
+  detecting = false;
 
 export async function startVoiceBasedGameFlow() {
-  video = document.getElementById('video');
-  canvas = document.getElementById('game');
-  const statusEl = document.getElementById('status');
-  const errorEl = document.getElementById('error');
+  video = document.getElementById("video");
+  canvas = document.getElementById("game");
+  const statusEl = document.getElementById("status");
+  const errorEl = document.getElementById("error");
 
   try {
     statusEl.textContent = "Аудио заавар эхэлж байна...";
@@ -19,14 +22,14 @@ export async function startVoiceBasedGameFlow() {
     video.srcObject = stream;
     video.play();
 
-    playVoice('voice-intro.mp3', () => {
+    playVoice("voice-intro.mp3", () => {
       detectFingerCount((level) => {
-        const levels = ['амархан', 'дунд', 'хэцүү'];
+        const levels = ["амархан", "дунд", "хэцүү"];
         statusEl.textContent = `Та ${levels[level - 1]} үеийг сонголоо.`;
 
-        playVoice('voice-confirm.mp3', () => {
+        playVoice("voice-confirm.mp3", () => {
           waitForFist(() => {
-            playVoice('voice-start.mp3', () => {
+            playVoice("voice-start.mp3", () => {
               startGame(`level${level}`);
             });
           });
