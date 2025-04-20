@@ -86,3 +86,47 @@ body {
     display: none !important;
   }
   
+  .finger-detection-area {
+    margin-top: 30px;
+    text-align: center;
+  }
+  
+  #finger-video {
+    width: 500px;
+    border: 2px solid #ffa7ba;
+    border-radius: 12px;
+    transform: scaleX(-1);
+    background: #000;
+  }
+  
+  #finger-status {
+    margin-top: 12px;
+    font-size: 20px;
+    color: #444;
+    font-weight: 600;
+  }
+  #winner-lottie {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #lost-lottie {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  

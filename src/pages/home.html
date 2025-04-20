@@ -1,7 +1,14 @@
 <div class="home-screen">
-    <h1>Welcome to Mazy!</h1>
-    <button onclick="loadPage('level1')">Start Level Easy</button>
-    <button onclick="loadPage('level2')">Start Level Medium</button>
-    <button onclick="loadPage('level3')">Start Level Hard</button>
+  <h1>Welcome to Mazy!</h1>
+
+  <button onclick="loadPage('level1')">Start Level Easy</button>
+  <button onclick="loadPage('level2')">Start Level Medium</button>
+  <button onclick="loadPage('level3')">Start Level Hard</button>
+
+  <audio id="level-audio" src="/src/assets/audio/instructions.mp3" autoplay preload="auto" ></audio>
+
+  <div class="finger-detection-area">
+    <video id="finger-video" ></video>
+    <div id="finger-status">Show 1, 2 or 3 fingers to start!</div>
   </div>
-  
+</div>

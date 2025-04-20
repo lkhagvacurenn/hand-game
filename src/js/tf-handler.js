@@ -137,6 +137,11 @@ export async function detectHand(player) {
     return new Promise((resolve) => {
       video.onloadedmetadata = () => {
         video.play();
+        const overlay = document.getElementById("video-overlay");
+        if (overlay) {
+          overlay.style.display = "none"; 
+        }
+      
 
         // Start hand detection
         setInterval(async () => {
@@ -264,8 +269,13 @@ export async function detectHand(player) {
                   0,
                   Math.min(canvas.height, player.targetY)
                 );
-
-                statusEl.textContent = `Gesture чиглэл: ${gestureDirection}`;
+                const emojiMap = {
+                  "баруун": "👉",
+                  "доош": "👇",
+                  "зүүн": "👈",
+                  "дээш": "👆",
+                };
+                statusEl.textContent = `Gesture чиглэл: ${emojiMap[gestureDirection] || "❓"}`;
               }
             }
           } catch (error) {

@@ -17,7 +17,9 @@ let gameLost = false;
 let walls = [];
 
 export function loadPage(path) {
-  fetch(`/src/pages/${path}.html`)
+  const basePath = path.startsWith("level") ? "level" : path;
+
+  fetch(`/src/pages/${basePath}.html`)
     .then((res) => res.text())
     .then((html) => {
       document.getElementById("app").innerHTML = html;
@@ -27,6 +29,9 @@ export function loadPage(path) {
       if (path === "home" && lottieContainer) {
         lottieContainer.style.display = "block";
         playStartAnimation();
+        import("./finger-detection.js").then((mod) => {
+          mod.startFingerDetection();
+        });
       } else if (lottieContainer) {
         lottieContainer.style.display = "none";
       }
@@ -34,11 +39,12 @@ export function loadPage(path) {
       if (path.startsWith("level")) {
         setTimeout(() => {
           initCanvas();
-          startGame(path);
+          startGame(path); 
         }, 0);
       }
     });
 }
+
 
 window.onpopstate = () => {
   const path = location.pathname.replace("/", "") || "home";
@@ -116,6 +122,13 @@ export function startGame(level) {
     default:
       walls = [];
   }
+  // Start background music
+const music = document.getElementById("bg-music");
+if (music) {
+  music.volume = 0.4;
+  music.currentTime = 0;
+  music.play().catch((e) => console.warn("Autoplay blocked:", e));
+}
 
   player = new Player();
   player.lives = 3;
@@ -152,28 +165,49 @@ function drawLoop() {
     player.draw(ctx);
 
     if (gameWon) {
-      ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "white";
-      ctx.font = "30px Arial";
-      ctx.textAlign = "center";
-      ctx.fillText("You Win!", canvas.width / 2, canvas.height / 2);
-    } else if (gameLost) {
-      ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "red";
-      ctx.font = "30px Arial";
-      ctx.textAlign = "center";
-      ctx.fillText("You Lose!", canvas.width / 2, canvas.height / 2);
+      const lottieWin = document.getElementById("winner-lottie");
+      const music = document.getElementById("bg-music");
+    if (music) music.pause();
 
-      ctx.fillStyle = "white";
-      ctx.font = "20px Arial";
-      ctx.fillText(
-        "Click to restart",
-        canvas.width / 2,
-        canvas.height / 2 + 40
-      );
-    } else if (!gameStarted) {
+      if (lottieWin && lottieWin.childElementCount === 0) {
+        lottieWin.classList.remove("hidden");
+        lottie.loadAnimation({
+          container: lottieWin,
+          renderer: "svg",
+          loop: false,
+          autoplay: true,
+          path: "/src/assets/lottie/congrats.json",
+        });
+    
+        setTimeout(() => {
+          lottieWin.classList.add("hidden");
+          loadPage("home"); 
+        }, 5000); 
+      }
+    }
+    else if (gameLost) {
+      const lottieLost = document.getElementById("lost-lottie");
+      const music = document.getElementById("bg-music");
+      if (music) music.pause();
+
+      if (lottieLost && lottieLost.childElementCount === 0) {
+        lottieLost.classList.remove("hidden");
+        lottie.loadAnimation({
+          container: lottieLost,
+          renderer: "svg",
+          loop: false,
+          autoplay: true,
+          path: "/src/assets/lottie/lost.json"
+        });
+    
+        setTimeout(() => {
+          lottieLost.classList.add("hidden");
+          const level = location.pathname.replace("/", "") || "level1";
+          loadPage(level);
+        }, 5000);
+      }
+    }
+     else if (!gameStarted) {
       ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.fillStyle = "white";
