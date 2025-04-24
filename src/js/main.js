@@ -97,7 +97,7 @@ function playStartAnimation() {
 function addRestartListener() {
   canvas.addEventListener("click", function () {
     if (gameLost) {
-      player = new Player();
+      player = new Player(window.selectedCharacter || "mouse");
       gameLost = false;
       gameWon = false;
       gameStarted = true;
@@ -130,7 +130,7 @@ if (music) {
   music.play().catch((e) => console.warn("Autoplay blocked:", e));
 }
 
-  player = new Player();
+  player = new Player(window.selectedCharacter || "mouse");
   player.lives = 3;
   gameWon = false;
   gameLost = false;
@@ -225,3 +225,4 @@ function drawLoop() {
 }
 
 window.loadPage = loadPage;
+

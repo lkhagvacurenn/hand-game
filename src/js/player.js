@@ -1,15 +1,28 @@
 export class Player {
-  constructor() {
+  constructor(type = "mouse") {
     this.x = 175;
     this.y = 355;
     this.size = 10;
     this.lives = 3;
     this.targetX = 175;
     this.targetY = 355;
-    this.speed = 0.2; // Movement smoothing factor
-  }
+    this.speed = 0.2;
+    this.type = type;
+}
+
 
   draw(ctx) {
+      if (this.type === "mouse") {
+          this.drawMouse(ctx);
+      } else if (this.type === "rabbit") {
+          this.drawRabbit(ctx);
+      }
+      ctx.fillStyle = "black";
+      ctx.font = "16px Arial";
+      ctx.fillText(`Lives: ${this.lives}`, 20, 30);
+  }
+
+  drawMouse(ctx) {
     // Draw the mouse character
     ctx.save();
 
@@ -81,11 +94,37 @@ export class Player {
     ctx.stroke();
 
     ctx.restore();
+  }
 
-    // Draw lives indicator
+  drawRabbit(ctx) {
+    ctx.save();
+    ctx.fillStyle = "#BBB";
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, 10, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#AAA";
+    ctx.beginPath();
+    ctx.ellipse(this.x - 5, this.y - 12, 2, 6, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(this.x + 5, this.y - 12, 2, 6, 0, 0, Math.PI * 2);
+    ctx.fill();
     ctx.fillStyle = "black";
-    ctx.font = "16px Arial";
-    ctx.fillText(`Lives: ${this.lives}`, 20, 30);
+    ctx.beginPath();
+    ctx.arc(this.x - 3, this.y - 1, 1.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(this.x + 3, this.y - 1, 1.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#FFB6C1";
+    ctx.beginPath();
+    ctx.arc(this.x, this.y + 2, 2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#BBB";
+    ctx.beginPath();
+    ctx.arc(this.x, this.y + 8, 3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
   }
 
   update() {
