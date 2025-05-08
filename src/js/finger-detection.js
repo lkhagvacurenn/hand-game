@@ -1,3 +1,5 @@
+import { loadPage } from "./main";
+
 // finger-detection.js
 export async function startFingerDetection() {
   const video = document.getElementById("finger-video");
@@ -8,10 +10,12 @@ export async function startFingerDetection() {
     throw new Error("TensorFlow or Handpose not loaded");
   }
 
-  const model = await handpose.load();
-  status.textContent = "Camera ready! Show 1 finger for Mouse, 5 for Rabbit";
+  const model = window.handposeModel || await handpose.load();
+  window.handposeModel = model;
+  status.textContent = "Тоглоом эхэллээ. 1 эсвэл 5 хуруу гарган тоглох баатараа сонгоорой.";
 
-  const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+  const stream = window.cameraStream || await navigator.mediaDevices.getUserMedia({video: true})
+  window.cameraStream = stream;
   video.srcObject = stream;
 
   video.onloadedmetadata = () => {
@@ -47,13 +51,17 @@ export async function startFingerDetection() {
         if (count === 1) {
           clearInterval(characterDetectLoop);
           window.selectedCharacter = "mouse";
-          status.textContent = "Mouse selected! Now show fingers for level: 1-Easy, 2-Medium, 3-Hard";
           startLevelDetection(model, video, status);
+          window.selectedCharacter = "mouse";
+          setTimeout(() => loadPage("select-level"), 1000);
+          status.textContent = "Хулгана сонгогдлоо";
         } else if (count === 5) {
           clearInterval(characterDetectLoop);
           window.selectedCharacter = "rabbit";
-          status.textContent = "Rabbit selected! Now show fingers for level: 1-Easy, 2-Medium, 3-Hard";
           startLevelDetection(model, video, status);
+          window.selectedCharacter = "rabbit";
+          setTimeout(() => loadPage("select-level"), 1000);
+          status.textContent = "Туулай сонгогдлоо";
         }
       }
     }, 700);
@@ -88,17 +96,21 @@ function startLevelDetection(model, video, status) {
 
       if (count === 1) {
         clearInterval(detectLoop);
-        status.textContent = "Starting Easy Level...";
+        status.textContent = "Анхан үе шат эхэллээ...";
         setTimeout(() => loadPage("level1"), 1000);
       } else if (count === 2) {
         clearInterval(detectLoop);
-        status.textContent = "Starting Medium Level...";
+        status.textContent = "Дунд үе шат эхэллээ...";
         setTimeout(() => loadPage("level2"), 1000);
       } else if (count === 3) {
         clearInterval(detectLoop);
-        status.textContent = "Starting Hard Level...";
+        status.textContent = "Хэцүү үе шат эхэллээ...";
         setTimeout(() => loadPage("level3"), 1000);
       }
     }
   }, 700);
 }
+
+
+
+export {startLevelDetection};

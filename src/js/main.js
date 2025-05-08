@@ -15,6 +15,14 @@ let gameStarted = false;
 let gameWon = false;
 let gameLost = false;
 let walls = [];
+let selectedCharacter = null;
+
+export function selectCharacter(character) {
+  selectedCharacter = character;
+  window.selectedCharacter = character; 
+  console.log("Selected character:", character);
+  loadPage("select-level");
+}
 
 export function loadPage(path) {
   const basePath = path.startsWith("level") ? "level" : path;
@@ -32,8 +40,22 @@ export function loadPage(path) {
         import("./finger-detection.js").then((mod) => {
           mod.startFingerDetection();
         });
-      } else if (lottieContainer) {
-        lottieContainer.style.display = "none";
+      } else if (path === "select-level") {
+        import("./finger-detection.js").then((mod) =>{
+          const video = document.getElementById("finger-video")
+          const status = document.getElementById("finger-status")
+
+          if(window.cameraStream) {
+            video.srcObject = window.cameraStream;
+            video.onloadedmetadata = () => video.play();
+
+            mod.startLevelDetection(window.handposeModel, video, status);
+            // status.textContent = "Тоглоом эхэллээ"
+          }
+          else {
+            mod.startFingerDetection();
+          }
+        })
       }
 
       if (path.startsWith("level")) {
@@ -225,4 +247,6 @@ function drawLoop() {
 }
 
 window.loadPage = loadPage;
+window.selectCharacter = selectCharacter;
+
 
